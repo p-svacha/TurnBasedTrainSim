@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum FloorType
+[DefOf]
+public static class FrameDefOf
 {
-    Wood
+
 }

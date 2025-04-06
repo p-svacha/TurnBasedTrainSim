@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum FrameType
+public abstract class FloorDef : WagonPartDef
 {
-    None,
-    Wood
+
 }

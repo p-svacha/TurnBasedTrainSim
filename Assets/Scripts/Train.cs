@@ -9,10 +9,8 @@ public class Train : MonoBehaviour
 
     public void AddStarterWagon()
     {
-        GameObject wagonObject = new GameObject("Wagon");
-        wagonObject.transform.SetParent(transform);
-        Wagon wagon = wagonObject.AddComponent<Wagon>();
-        wagon.InitializeStarterWagon();
+        Wagon wagon = WagonManager.CreateWagon(WagonLayoutDefOf.Standard, WheelsDefOf.WoodenSpokedWheels, WheelsDefOf.WoodenSpokedWheels, FloorDefOf.WoodenFloor, null);
+        wagon.transform.SetParent(transform);
 
         Wagons.Add(wagon);
     }

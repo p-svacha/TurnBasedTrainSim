@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WheelType
+[DefOf]
+public static class FloorDefOf
 {
-    Wood
+    public static FloorDef WoodenFloor;
 }

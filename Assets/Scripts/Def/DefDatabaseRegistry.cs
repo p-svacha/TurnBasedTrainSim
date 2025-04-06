@@ -23,8 +23,12 @@ public static class DefDatabaseRegistry
     /// </summary>
     public static void AddAllGlobalDefs()
     {
-        DefDatabase<FurnitureDef>.AddDefs(FurnitureDefList.Defs);
         DefDatabase<ResourceDef>.AddDefs(ResourceDefList.Defs);
+        DefDatabase<FurnitureDef>.AddDefs(FurnitureDefList.Defs);
+        DefDatabase<WheelsDef>.AddDefs(WheelsDefList.Defs);
+        DefDatabase<FloorDef>.AddDefs(FloorDefList.Defs);
+        DefDatabase<FrameDef>.AddDefs(FrameDefList.Defs);
+        DefDatabase<WagonLayoutDef>.AddDefs(WagonLayoutDefList.Defs);
     }
 
     // Called when a DefDatabase<T> type is accessed for the first time

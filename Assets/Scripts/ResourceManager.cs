@@ -47,5 +47,12 @@ public static class ResourceManager
         CachedPrefabs.Add(resourcePath, loadedPrefabs);
         return loadedPrefabs;
     }
+
+    public static void ClearCache()
+    {
+        CachedMaterials.Clear();
+        CachedTextures.Clear();
+        CachedPrefabs.Clear();
+    }
 }
 

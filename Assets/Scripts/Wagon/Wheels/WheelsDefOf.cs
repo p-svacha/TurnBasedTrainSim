@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DefOf]
-public static class FurnitureDefOf
+public static class WheelsDefOf
 {
-    public static FurnitureDef HandcarEngine;
+    public static WheelsDef WoodenSpokedWheels;
 }

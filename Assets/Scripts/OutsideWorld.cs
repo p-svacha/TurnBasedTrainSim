@@ -60,7 +60,9 @@ public class OutsideWorld : MonoBehaviour
             trackMeshBuilder.BuildCube(beamSubmesh, new Vector3(boardStartX, TRACK_Y + BOARD_HEIGHT, boardStartZ + BOARD_LENGTH - BEAM_MARGIN), new Vector3(BOARD_WIDTH + BOARD_GAP, BEAM_HEIGHT, BEAM_WIDTH));
         }
 
-        return trackMeshBuilder.ApplyMesh(addCollider: false);
+        GameObject trackObject = trackMeshBuilder.ApplyMesh(addCollider: false);
+        trackObject.transform.SetParent(transform);
+        return trackObject;
     }
 
     public void CreateBackground()
@@ -96,7 +98,9 @@ public class OutsideWorld : MonoBehaviour
             backgroundMeshBuilder.BuildCube(rockSubmesh, new Vector3(posX - (sizeXZ / 2), TRACK_Y, posZ - (sizeXZ / 2)), new Vector3(sizeXZ, sizeY, sizeXZ));
         }
 
-        return backgroundMeshBuilder.ApplyMesh(addCollider: false);
+        GameObject bgObject = backgroundMeshBuilder.ApplyMesh(addCollider: false);
+        bgObject.transform.SetParent(transform);
+        return bgObject;
     }
 
     public void MoveWorld(float trainSpeed)

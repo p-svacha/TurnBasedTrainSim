@@ -82,7 +82,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WagonLength: 24
+    - _WagonLength: 36
     - _WagonWidth: 6
     - _ZWrite: 1
     m_Colors:

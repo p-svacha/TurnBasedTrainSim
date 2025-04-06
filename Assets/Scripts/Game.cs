@@ -9,8 +9,22 @@ public class Game : MonoBehaviour
 
     public GameObject HoveredObject;
 
+
+    private void Awake()
+    {
+        ResourceManager.ClearCache();
+
+        // Load defs
+        if (DefDatabase<ResourceDef>.AllDefs.Count == 0) // Skip if defs already loaded (like this no rebuild is needed when starting game in editor)
+        {
+            DefDatabaseRegistry.AddAllGlobalDefs();
+            DefDatabaseRegistry.ResolveAllReferences();
+            DefDatabaseRegistry.OnLoadingDone();
+        }
+    }
+
     // Start is called before the first frame update
-    void Start()
+    void Start()    
     {
         StartGame();
     }
