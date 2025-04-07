@@ -36,7 +36,7 @@ public static class WagonManager
         }
 
         wagon.Initialize(layoutDef, frontWheels, backWheels, floor, frame);
-        wagon.AddNewFurniture(FurnitureDefOf.HandcarEngine, new Vector2Int(4, 2), Direction.N);
+        wagon.AddNewFurniture(FurnitureDefOf.HandcarEngine, new Vector2Int(0, 0), Direction.N);
 
         return wagon;
     }

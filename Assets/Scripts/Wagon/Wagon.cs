@@ -18,7 +18,7 @@ public class Wagon : MonoBehaviour
 
     public Furniture AddNewFurniture(FurnitureDef furnitureDef, Vector2Int position, Direction rotation)
     {
-        Furniture newFurniture = FurnitureCreator.SpawnFurniture(furnitureDef, this, Tiles[position.x, position.y], rotation);
+        Furniture newFurniture = FurnitureCreator.CreateFurniture(furnitureDef, Tiles[position.x, position.y], rotation);
         Furniture.Add(newFurniture);
         return newFurniture;
     }
