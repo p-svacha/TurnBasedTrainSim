@@ -10,6 +10,14 @@ Shader "Custom/WagonFloor"
 
         _WagonLength("Wagon Length (Tiles)", Float) = 24
         _WagonWidth("Wagon Width (Tiles)", Float) = 6
+        _TileSize("Tile Size", Float) = 0.5
+
+        _FreeColor("Free Tile Color", Color) = (0,1,0,1)
+        _BlockedColor("Blocked Color", Color) = (1,0,0,1)
+        _InteractionSpotColor("Interaction Spot Color", Color) = (0,0,1,1)
+        _ErrorColor("Error Color", Color) = (1,0,1,1)
+
+        [Toggle] _ShowTileOccupation("Show Tile Occupation", Float) = 0
     }
     SubShader
     {
@@ -17,10 +25,8 @@ Shader "Custom/WagonFloor"
         LOD 200
 
         CGPROGRAM
-        // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
 
-        // Use shader model 3.0 target, to get nicer looking lighting
+        #pragma surface surf Standard fullforwardshadows
         #pragma target 3.0
 
         struct Input
@@ -36,41 +42,56 @@ Shader "Custom/WagonFloor"
 
         float _WagonLength;
         float _WagonWidth;
+        float _TileSize;
 
-        // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-        // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-        // #pragma instancing_options assumeuniformscaling
-        UNITY_INSTANCING_BUFFER_START(Props)
-            // put more per-instance properties here
-        UNITY_INSTANCING_BUFFER_END(Props)
+        fixed4 _FreeColor;
+        fixed4 _BlockedColor;
+        fixed4 _InteractionSpotColor;
+        fixed4 _ErrorColor;
 
-        void surf (Input IN, inout SurfaceOutputStandard o)
+        float _ShowTileOccupation;
+        float _TileOccupation[256];
+
+        void surf(Input IN, inout SurfaceOutputStandard o)
         {
             // Albedo comes from a texture tinted by color
             fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
+
+            
+            // Calculate tile coordinates
+            int tileCoordinatesX = int(IN.uv_MainTex.x * _WagonLength);
+            int tileCoordinatesY = int(IN.uv_MainTex.y * _WagonWidth);
+            int tileIndex = (tileCoordinatesX * _WagonWidth) + tileCoordinatesY;
 
             // Check facing direction
             float3 worldNormal = UnityObjectToWorldNormal(o.Normal);
             float isFacingUpwards = (dot(normalize(worldNormal), float3(0, 1, 0)) > 0.5);
 
-            // Grid Overlay
-            if (_ShowGrid == 1)
+            // Occupation Overlay
+            if (_ShowTileOccupation && isFacingUpwards == 1)
             {
-                if (isFacingUpwards == 1)
-                {
-                    // Scale UV by wagon dimensions
-                    IN.uv_GridTex.x *= _WagonLength;
-                    IN.uv_GridTex.y *= _WagonWidth;
-
-                    fixed4 gridColor = tex2D(_GridTex, IN.uv_GridTex) * _GridColor;
-                    c = (gridColor.a * gridColor) + ((1 - gridColor.a) * c);
-                }
+                int occupation = _TileOccupation[tileIndex];
+                if (occupation == 0) c = _FreeColor;
+                else if (occupation == 1) c = _BlockedColor;
+                else if (occupation == 2) c = _InteractionSpotColor;
+                else c = _ErrorColor;
             }
 
+            // Grid Overlay
+            if (_ShowGrid == 1 && isFacingUpwards == 1)
+            {
+                // Scale UV by wagon dimensions
+                IN.uv_GridTex.x *= _WagonLength;
+                IN.uv_GridTex.y *= _WagonWidth;
+
+                fixed4 gridColor = tex2D(_GridTex, IN.uv_GridTex) * _GridColor;
+                c = (gridColor.a * gridColor) + ((1 - gridColor.a) * c);
+            }
+            
             o.Albedo = c.rgb;
             o.Alpha = c.a;
         }
         ENDCG
-    }
+        }
     FallBack "Diffuse"
 }

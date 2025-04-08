@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class Furniture : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public FurnitureDef Def;
+
+    public Tile Origin;
+    public Direction Rotation;
+    public bool IsMirrored;
+    
+
+    public void Init(FurnitureDef def, Tile origin, Direction rotation, bool isMirrored)
     {
-        
+        Def = def;
+        Origin = origin;
+        Rotation = rotation;
+        IsMirrored = isMirrored;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

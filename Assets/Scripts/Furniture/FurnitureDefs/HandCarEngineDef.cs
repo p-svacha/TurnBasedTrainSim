@@ -12,7 +12,7 @@ public class HandCarEngineDef : FurnitureDef
     public override Vector2Int Dimensions => new Vector2Int(4, 4);
     public override List<Vector2Int> InteractionSpotTiles => new List<Vector2Int>()
     {
-        new Vector2Int(-1, 2),
+        new Vector2Int(-1, 1),
         new Vector2Int(4, 2),
     };
 

@@ -9,6 +9,8 @@ public class Game : MonoBehaviour
 
     public GameObject HoveredObject;
 
+    // Visual
+    private bool IsShowingTileOccupationOverlay;
 
     private void Awake()
     {
@@ -44,7 +46,10 @@ public class Game : MonoBehaviour
     {
         GameObject trainObject = new GameObject("Train");
         Train = trainObject.AddComponent<Train>();
-        Train.AddStarterWagon();
+
+        Wagon wagon = WagonManager.CreateWagon(WagonLayoutDefOf.Short, WheelsDefOf.WoodenSpokedWheels, WheelsDefOf.WoodenSpokedWheels, FloorDefOf.WoodenFloor, null);
+        wagon.AddNewFurniture(FurnitureDefOf.HandcarEngine, new Vector2Int(1, 1), Direction.N, isMirrored: false);
+        Train.AddWagon(wagon);
     }
 
     private void InitializeStarterCrew()
@@ -60,9 +65,16 @@ public class Game : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Period)) Train.Speed += 10f;
         if (Input.GetKeyDown(KeyCode.Comma)) Train.Speed -= 10f;
+        if (Input.GetKeyDown(KeyCode.O)) ToggleTileOccupationOverlay();
 
         if (Train.Speed != 0f) OutsideWorld.Instance.MoveWorld(Train.Speed);
 
         WorldManager.UpdateHoveredObjects();
+    }
+
+    private void ToggleTileOccupationOverlay()
+    {
+        IsShowingTileOccupationOverlay = !IsShowingTileOccupationOverlay;
+        Train.ShowTileOccupationOverlay(IsShowingTileOccupationOverlay);
     }
 }

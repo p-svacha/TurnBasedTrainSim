@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4721980283610151932}
   - component: {fileID: 1114783975725508040}
   m_Layer: 0
-  m_Name: Wheel_FrontLeft
+  m_Name: Wheel_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 6698221168991077501}
   - component: {fileID: 5559274685513749541}
   m_Layer: 0
-  m_Name: Wheel_FrontRight
+  m_Name: Wheel_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
