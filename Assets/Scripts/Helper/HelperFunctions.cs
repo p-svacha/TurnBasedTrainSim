@@ -9,11 +9,47 @@ public static class HelperFunctions
     /// </summary>
     public static void SetLayer(GameObject obj, int layer)
     {
-        obj.layer = WorldManager.Layer_Wagon;
+        obj.layer = layer;
         for (int i = 0; i < obj.transform.childCount; i++)
         {
-            obj.transform.GetChild(i).gameObject.layer = layer;
+            SetLayer(obj.transform.GetChild(i).gameObject, layer);
         }
+    }
+
+    /// <summary>
+    /// Searches for a component of type T on the provided GameObject and all its parent objects until one is found.
+    /// </summary>
+    /// <typeparam name="T">The type of component to search for.</typeparam>
+    /// <param name="gameObject">The starting GameObject to search on.</param>
+    /// <returns>The component of type T if found; otherwise, returns null.</returns>
+    public static T GetComponentInParentChain<T>(GameObject gameObject) where T : Component
+    {
+        if (gameObject == null)
+        {
+            return null;
+        }
+
+        // Check if the component exists on the current GameObject.
+        T component = gameObject.GetComponent<T>();
+        if (component != null)
+        {
+            return component;
+        }
+
+        // Traverse the parent hierarchy until the component is found.
+        Transform parentTransform = gameObject.transform.parent;
+        while (parentTransform != null)
+        {
+            component = parentTransform.GetComponent<T>();
+            if (component != null)
+            {
+                return component;
+            }
+            parentTransform = parentTransform.parent;
+        }
+
+        // Return null if the component was not found on any parent.
+        return null;
     }
 
     /// <summary>

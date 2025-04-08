@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Wagon : MonoBehaviour
 {
     private const float WHEELS_X_OFFSET = 4f;
+
+    public Train Train;
+    public Game Game => Train.Game;
 
     public Tile[,] Tiles;
 
@@ -70,7 +74,6 @@ public class Wagon : MonoBehaviour
                     {
                         Vector2Int translatedPos = HelperFunctions.GetTranslatedPosition(localPos, furniture.Def.Dimensions, furniture.Rotation, furniture.IsMirrored);
                         Vector2Int finalTilePos = furniture.Origin.Coordinates + translatedPos;
-                        Debug.Log($"final pos is {finalTilePos}");
                         Tiles[finalTilePos.x, finalTilePos.y].Occupation = TileOccupation.Blocked;
                     }
                 }
@@ -94,7 +97,6 @@ public class Wagon : MonoBehaviour
             for (int y = 0; y < Width; y++)
             {
                 shaderValues[index] = (int)Tiles[x, y].Occupation;
-                Debug.Log(shaderValues[index]);
                 index++;
             }
         }
@@ -121,6 +123,11 @@ public class Wagon : MonoBehaviour
     public Tile GetRandomTile()
     {
         return Tiles[Random.Range(0, Length), Random.Range(0, Width)];
+    }
+
+    public Tile GetRandomEmptyTile()
+    {
+        return Tiles.Cast<Tile>().Where(t => t.Occupation == TileOccupation.Empty).ToList().RandomElement();
     }
 
     #endregion

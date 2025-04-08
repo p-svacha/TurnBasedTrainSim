@@ -14,7 +14,7 @@ public static class WorldManager
 
     // Hovered Objects
     public static GameObject HoveredObject { get; private set; }
-    public static Character HoveredCharater { get; private set; }
+    public static Character HoveredCharacter { get; private set; }
     public static Furniture HoveredFurniture { get; private set; }
 
     public static void Initialize()
@@ -36,7 +36,6 @@ public static class WorldManager
         if (Physics.Raycast(ray, out hit))
         {
             newHoveredObject = hit.collider.gameObject;
-            Debug.Log("Pointing at: " + newHoveredObject.name);
 
             if(newHoveredObject.layer == Layer_Crew)
             {
@@ -44,12 +43,12 @@ public static class WorldManager
             }
             if (newHoveredObject.layer == Layer_Furniture)
             {
-                newHoveredFurniture = newHoveredObject.GetComponent<Furniture>();
+                newHoveredFurniture = HelperFunctions.GetComponentInParentChain<Furniture>(newHoveredObject);
             }
         }
 
         HoveredObject = newHoveredObject;
         HoveredFurniture = newHoveredFurniture;
-        HoveredCharater = newHoveredCharacter;
+        HoveredCharacter = newHoveredCharacter;
     }
 }

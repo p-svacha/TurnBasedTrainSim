@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
+    // Game state
     public Train Train;
     public Crew Crew;
+    public GameState GameState { get; private set; }
 
-    public GameObject HoveredObject;
+    // User input state
+    private InputHandler InputHandler;
+    public Character SelectedCharacter { get; private set; }
 
-    // Visual
+    // Visual state
     private bool IsShowingTileOccupationOverlay;
+
+    #region Initialize
 
     private void Awake()
     {
@@ -33,6 +39,7 @@ public class Game : MonoBehaviour
 
     private void StartGame()
     {
+        InputHandler = new InputHandler(this);
         WorldManager.Initialize();
 
         OutsideWorld.Instance.CreateBackground();
@@ -40,12 +47,15 @@ public class Game : MonoBehaviour
 
         InitializeStarterTrain();
         InitializeStarterCrew();
+
+        GameState = GameState.PlanningPhase;
     }
 
     private void InitializeStarterTrain()
     {
         GameObject trainObject = new GameObject("Train");
         Train = trainObject.AddComponent<Train>();
+        Train.Init(this);
 
         Wagon wagon = WagonManager.CreateWagon(WagonLayoutDefOf.Short, WheelsDefOf.WoodenSpokedWheels, WheelsDefOf.WoodenSpokedWheels, FloorDefOf.WoodenFloor, null);
         wagon.AddNewFurniture(FurnitureDefOf.HandcarEngine, new Vector2Int(1, 1), Direction.N, isMirrored: false);
@@ -60,21 +70,71 @@ public class Game : MonoBehaviour
         Crew.CreateStarterCrew();
     }
 
+    #endregion
+
+    #region Update
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Period)) Train.Speed += 10f;
-        if (Input.GetKeyDown(KeyCode.Comma)) Train.Speed -= 10f;
-        if (Input.GetKeyDown(KeyCode.O)) ToggleTileOccupationOverlay();
+        WorldManager.UpdateHoveredObjects();
+        InputHandler.HandleInputs();
 
         if (Train.Speed != 0f) OutsideWorld.Instance.MoveWorld(Train.Speed);
-
-        WorldManager.UpdateHoveredObjects();
     }
 
-    private void ToggleTileOccupationOverlay()
+    #endregion
+
+    #region Simulation
+
+    public void SetOperatingMode(Furniture furniture, OperatingMode mode)
+    {
+
+    }
+
+    public Dictionary<ResourceDef, int> GetOutputResources()
+    {
+        Dictionary<ResourceDef, int> outputResources = new Dictionary<ResourceDef, int>();
+        return outputResources;
+    }
+
+    #endregion
+
+    #region Input State
+
+    public void SelectCharacter(Character c)
+    {
+        DeselectCharacter();
+        SelectedCharacter = c;
+        SelectedCharacter.Select();
+    }
+
+    public void DeselectCharacter()
+    {
+        SelectedCharacter?.Deselect();
+        SelectedCharacter = null;
+    }
+
+    #endregion
+
+    #region Visual
+
+    public void RelocateAllBlockedCharacters()
+    {
+        foreach (Character c in Crew.Characters)
+        {
+            if (c.CurrentTile.Occupation == TileOccupation.Blocked)
+            {
+                c.TeleportOnTile(c.CurrentTile.Wagon.GetRandomEmptyTile());
+            }
+        }
+    }
+
+    public void ToggleTileOccupationOverlay()
     {
         IsShowingTileOccupationOverlay = !IsShowingTileOccupationOverlay;
         Train.ShowTileOccupationOverlay(IsShowingTileOccupationOverlay);
     }
+
+    #endregion
 }

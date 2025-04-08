@@ -4,18 +4,29 @@ using UnityEngine;
 
 public class Train : MonoBehaviour
 {
+    public Game Game;
     public List<Wagon> Wagons = new List<Wagon>();
     public float Speed;
 
+    public void Init(Game game)
+    {
+        Game = game;
+    }
+
     public void AddWagon(Wagon wagon)
     {
+        wagon.Train = this;
         wagon.transform.SetParent(transform);
         Wagons.Add(wagon);
     }
 
     public Tile GetRandomTile()
     {
-        return Wagons[0].GetRandomTile();
+        return Wagons.RandomElement().GetRandomTile();
+    }
+    public Tile GetRandomEmptyTile()
+    {
+        return Wagons.RandomElement().GetRandomEmptyTile();
     }
 
     public void ShowTileOccupationOverlay(bool value)
