@@ -10,7 +10,7 @@ public class Wagon : MonoBehaviour
     public Train Train;
     public Game Game => Train.Game;
 
-    public Tile[,] Tiles;
+    private Tile[,] Tiles;
 
     public WagonLayoutDef Layout;
     public Wheels FrontWheels;
@@ -42,15 +42,10 @@ public class Wagon : MonoBehaviour
         Frame = frame;
     }
 
-    public Furniture AddNewFurniture(FurnitureDef furnitureDef, Vector2Int position, Direction rotation, bool isMirrored)
-    {
-        Furniture newFurniture = FurnitureCreator.CreateFurniture(furnitureDef, Tiles[position.x, position.y], rotation, isMirrored);
-        Furniture.Add(newFurniture);
-        UpdateTileOccupation();
-        return newFurniture;
-    }
-
-    private void UpdateTileOccupation()
+    /// <summary>
+    /// Recalculates the occupation of each tile in this wagon.
+    /// </summary>
+    public void UpdateTileOccupation()
     {
         // Empty every tile
         for (int x = 0; x < Length; x++)
@@ -65,27 +60,15 @@ public class Wagon : MonoBehaviour
         foreach(Furniture furniture in Furniture)
         {
             // Blocked tiles
-            for (int localX = 0; localX < furniture.Def.Dimensions.x; localX++)
+            foreach (Tile blockedTile in furniture.GetBlockedTiles())
             {
-                for (int localY = 0; localY < furniture.Def.Dimensions.y; localY++)
-                {
-                    Vector2Int localPos = new Vector2Int(localX, localY);
-                    if (!furniture.Def.UnoccupiedTiles.Contains(localPos))
-                    {
-                        Vector2Int translatedPos = HelperFunctions.GetTranslatedPosition(localPos, furniture.Def.Dimensions, furniture.Rotation, furniture.IsMirrored);
-                        Vector2Int finalTilePos = furniture.Origin.Coordinates + translatedPos;
-                        Tiles[finalTilePos.x, finalTilePos.y].Occupation = TileOccupation.Blocked;
-                    }
-                }
+                blockedTile.Occupation = TileOccupation.Blocked;
             }
 
             // Interaction spot tiles
-            foreach(Vector2Int interactionSpotPos in furniture.Def.InteractionSpotTiles)
+            foreach(InteractionSpot interactionSpot in furniture.GetInteractionSpots())
             {
-                Vector2Int translatedPos = HelperFunctions.GetTranslatedPosition(interactionSpotPos, furniture.Def.Dimensions, furniture.Rotation, furniture.IsMirrored);
-                Vector2Int finalTilePos = furniture.Origin.Coordinates + translatedPos;
-                if (finalTilePos.x < 0 || finalTilePos.x >= Length || finalTilePos.y < 0 || finalTilePos.y >= Width) throw new System.Exception($"Interaction spot outside of wagon! {finalTilePos}");
-                Tiles[finalTilePos.x, finalTilePos.y].Occupation = TileOccupation.InteractionSpot;
+                interactionSpot.GetWagonTile(this).Occupation = TileOccupation.InteractionSpot;
             }
         }
 
@@ -119,6 +102,12 @@ public class Wagon : MonoBehaviour
     /// Amount of tiles in y axis (sideways-direction)
     /// </summary>
     public int Width => Layout.Width;
+
+    public Tile GetTile(Vector2Int pos) => GetTile(pos.x, pos.y);
+    public Tile GetTile(int x, int y)
+    {
+        return Tiles[x, y];
+    }
 
     public Tile GetRandomTile()
     {

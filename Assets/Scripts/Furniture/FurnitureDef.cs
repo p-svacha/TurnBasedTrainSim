@@ -29,7 +29,13 @@ public abstract class FurnitureDef : Def
     /// <br/>The coordinates in the list act as an offset of the origin point.
     /// <br/>May be outside of dimensions.
     /// </summary>
-    public virtual List<Vector2Int> InteractionSpotTiles { get; } = new List<Vector2Int>();
+    public virtual List<InteractionSpot> InteractionSpots { get; } = new List<InteractionSpot>();
+
+    /// <summary>
+    /// The list of all modes this furniture can operate in, including "idle" modes that don't do anything.
+    /// <br/>The first mode in the list will be the initial mode when the furniture gets created.
+    /// </summary>
+    protected abstract List<OperatingMode> OperatingModes { get; }
 
     /// <summary>
     /// Returns a list with all tiles that need to be completely free to be able to place this furniture.
@@ -50,21 +56,20 @@ public abstract class FurnitureDef : Def
         }
 
         // Add interaction spots
-        tiles.AddRange(InteractionSpotTiles);
+        tiles.AddRange(InteractionSpots.Select(i => i.Position));
 
         return tiles;
     }
 
 
     private List<OperatingMode> _OperatingModes;
-    protected abstract List<OperatingMode> OperatingModes { get; }
     public List<OperatingMode> GetOperatingModes() => _OperatingModes;
 
     public override bool Validate()
     {
         _OperatingModes = OperatingModes;
 
-        if (InteractionSpotTiles.Count < _OperatingModes.Max(o => o.NumCrewMembers)) throw new System.Exception("Not enough interaction spots for all operating modes.");
+        if (InteractionSpots.Count < _OperatingModes.Max(o => o.NumCrewMembers)) throw new System.Exception("Not enough interaction spots for all operating modes.");
 
         return base.Validate();
     }

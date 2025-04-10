@@ -58,7 +58,7 @@ public class Game : MonoBehaviour
         Train.Init(this);
 
         Wagon wagon = WagonManager.CreateWagon(WagonLayoutDefOf.Short, WheelsDefOf.WoodenSpokedWheels, WheelsDefOf.WoodenSpokedWheels, FloorDefOf.WoodenFloor, null);
-        wagon.AddNewFurniture(FurnitureDefOf.HandcarEngine, new Vector2Int(1, 1), Direction.N, isMirrored: false);
+        AddNewFurniture(FurnitureDefOf.HandcarEngine, wagon.GetTile(1,1), Direction.N, isMirrored: false);
         Train.AddWagon(wagon);
     }
 
@@ -87,9 +87,23 @@ public class Game : MonoBehaviour
 
     #region Simulation
 
-    public void SetOperatingMode(Furniture furniture, OperatingMode mode)
+    public Furniture AddNewFurniture(FurnitureDef furnitureDef, Tile origin, Direction rotation, bool isMirrored)
     {
+        Furniture newFurniture = FurnitureCreator.CreateFurniture(this, furnitureDef, origin, rotation, isMirrored);
+        origin.Wagon.Furniture.Add(newFurniture);
+        origin.Wagon.UpdateTileOccupation();
+        return newFurniture;
+    }
 
+    public void SetOperatingMode(Furniture furniture, OperatingMode mode, List<Character> assignedCharacters)
+    {
+        Debug.Log($"Setting operating mode of {furniture.LabelCap} to {mode.Label}. Assigned crew: {assignedCharacters.ToListString()}.");
+
+        furniture.SetAssignedCharacters(assignedCharacters);
+        foreach(Character c in assignedCharacters)
+        {
+
+        }
     }
 
     public Dictionary<ResourceDef, int> GetOutputResources()
@@ -125,7 +139,7 @@ public class Game : MonoBehaviour
         {
             if (c.CurrentTile.Occupation == TileOccupation.Blocked)
             {
-                c.TeleportOnTile(c.CurrentTile.Wagon.GetRandomEmptyTile());
+                c.TeleportOnTile(c.CurrentTile.Wagon.GetRandomEmptyTile(), HelperFunctions.GetRandomDirection4());
             }
         }
     }

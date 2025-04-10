@@ -55,4 +55,9 @@ public static class ListExtensions
 
         return shuffledList;
     }
+
+    public static string ToListString<T>(this List<T> list)
+    {
+        return string.Join(", ", list);
+    }
 }

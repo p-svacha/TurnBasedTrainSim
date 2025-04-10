@@ -26,7 +26,7 @@ public class Crew : MonoBehaviour
         GameObject characterObject = Instantiate(ResourceManager.LoadPrefab("Prefabs/Characters/Human"), transform);
         characterObject.layer = WorldManager.Layer_Crew;
         Character character = characterObject.AddComponent<Character>();
-        character.TeleportOnTile(Train.GetRandomEmptyTile());
+        character.TeleportOnTile(Train.GetRandomEmptyTile(), HelperFunctions.GetRandomDirection4());
         Characters.Add(character);
     }
 }

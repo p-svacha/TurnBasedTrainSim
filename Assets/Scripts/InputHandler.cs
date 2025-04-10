@@ -15,6 +15,7 @@ public class InputHandler
     {
         if (Input.GetKeyDown(KeyCode.O)) Game.ToggleTileOccupationOverlay();
 
+        if (HelperFunctions.IsMouseOverUi()) return;
         if (Input.GetMouseButtonDown(0)) OnLeftClick();
         else if (Input.GetMouseButtonDown(1)) OnRightClick();
     }
@@ -52,16 +53,16 @@ public class InputHandler
     }
     public void OnCharacterRightClicked(Character c)
     {
-
+        // Character Actions
     }
 
     public void OnFurnitureLeftClicked(Furniture f)
     {
-        Debug.Log("FLC");
+        // Select Furniture
     }
     public void OnFurnitureRightClicked(Furniture f)
     {
-
+        ContextMenu.Instance.Show(f.GetActions(), title: f.LabelCap);
     }
 
     public void OnNothingLeftClicked()

@@ -10,21 +10,22 @@ public class HandCarEngineDef : FurnitureDef
     public override string PrefabResourcePath => "Prefabs/Furniture/Engines/HandcarEngine";
 
     public override Vector2Int Dimensions => new Vector2Int(4, 4);
-    public override List<Vector2Int> InteractionSpotTiles => new List<Vector2Int>()
+    public override List<InteractionSpot> InteractionSpots => new List<InteractionSpot>()
     {
-        new Vector2Int(-1, 1),
-        new Vector2Int(4, 2),
+        new InteractionSpot(-1, 1, Direction.E),
+        new InteractionSpot(4, 2, Direction.W),
     };
 
     protected override List<OperatingMode> OperatingModes => new List<OperatingMode>()
     {
         new OperatingMode()
         {
-            Name = "Inactive"
+            Label = "Inactive"
         },
         new OperatingMode()
         {
-            Name = "One-Person Operation",
+            Label = "One-Person Operation",
+            AssignLabel = "Operate",
             Description = "One crew member pumps the engine for some minor propulsion.",
             NumCrewMembers = 1,
             OutputResources = new Dictionary<ResourceDef, int>()
@@ -34,7 +35,8 @@ public class HandCarEngineDef : FurnitureDef
         },
         new OperatingMode()
         {
-            Name = "Two-Person Operation",
+            Label = "Two-Person Operation",
+            AssignLabel = "Operate",
             Description = "Two crew members pump the engine for full output.",
             NumCrewMembers = 2,
             OutputResources = new Dictionary<ResourceDef, int>()

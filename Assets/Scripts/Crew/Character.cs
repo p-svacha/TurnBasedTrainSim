@@ -12,10 +12,11 @@ public class Character : MonoBehaviour
     private GameObject SelectionIndicator;
     private const float SELECTION_INDICATOR_Y_OFFSET = 1.6f;
 
-    public void TeleportOnTile(Tile tile)
+    public void TeleportOnTile(Tile tile, Direction faceDirection)
     {
         CurrentTile = tile;
         transform.position = tile.GetWorldPosition();
+        transform.rotation = HelperFunctions.GetRotation(faceDirection, offset: 180);
     }
 
     public void Select()

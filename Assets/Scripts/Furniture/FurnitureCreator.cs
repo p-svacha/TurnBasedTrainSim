@@ -11,7 +11,7 @@ public static class FurnitureCreator
     /// <param name="tile">The exact tile the furniture should be created on. This is the south-western most tile of the furniture.</param>
     /// <param name="rotation">The rotation of the furniture. Direction.N means the dimensions and position will be exactly like in the def. In other rotations they will be translated accordingly.</param>
     /// <param name="isMirrored">Flag if the furniture is mirrored in the x axis.</param>
-    public static Furniture CreateFurniture(FurnitureDef def, Tile tile, Direction rotation, bool isMirrored)
+    public static Furniture CreateFurniture(Game game, FurnitureDef def, Tile tile, Direction rotation, bool isMirrored)
     {
         if (def == null) throw new System.Exception("The provided FurnitureDef is null.");
 
@@ -28,7 +28,7 @@ public static class FurnitureCreator
 
         HelperFunctions.SetLayer(furniture.gameObject, WorldManager.Layer_Furniture);
 
-        furniture.Init(def, tile, rotation, isMirrored);
+        furniture.Init(game, def, tile, rotation, isMirrored);
 
         return furniture;
     }
