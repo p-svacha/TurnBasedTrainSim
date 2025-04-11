@@ -7,14 +7,21 @@ public class Game : MonoBehaviour
     // Game state
     public Train Train;
     public Crew Crew;
+    public Time Time;
+    public Dictionary<ResourceDef, int> TurnResolutionResourceChanges;
     public GameState GameState { get; private set; }
 
-    // User input state
+    // User input
+    public GameUI UI;
     private InputHandler InputHandler;
     public Character SelectedCharacter { get; private set; }
 
     // Visual state
     private bool IsShowingTileOccupationOverlay;
+
+    // Rules
+    private const int PP_KM_WEIGHT = 10000; // The amount of kg 1 PP can transport 1 km in a turn.
+    public const int HUMAN_WEIGHT = 80;
 
     #region Initialize
 
@@ -34,6 +41,8 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()    
     {
+        UI = GameObject.Find("GameUI").GetComponent<GameUI>();
+
         StartGame();
     }
 
@@ -42,13 +51,18 @@ public class Game : MonoBehaviour
         InputHandler = new InputHandler(this);
         WorldManager.Initialize();
 
+        TurnResolutionResourceChanges = new Dictionary<ResourceDef, int>();
+        Time = new Time();
+
         OutsideWorld.Instance.CreateBackground();
         OutsideWorld.Instance.CreateTracks();
 
         InitializeStarterTrain();
         InitializeStarterCrew();
 
-        GameState = GameState.PlanningPhase;
+        UI.Init(this);
+
+        StartTurn();
     }
 
     private void InitializeStarterTrain()
@@ -80,12 +94,34 @@ public class Game : MonoBehaviour
         WorldManager.UpdateHoveredObjects();
         InputHandler.HandleInputs();
 
-        if (Train.Speed != 0f) OutsideWorld.Instance.MoveWorld(Train.Speed);
+        int distance = GetTravelDistance();
+        if (distance != 0f) OutsideWorld.Instance.MoveWorld(distance);
     }
 
     #endregion
 
-    #region Simulation
+    #region Turn Planning
+
+    public void StartTurn()
+    {
+        GameState = GameState.TurnPlanning;
+        UI.UpdateTurnResolution();
+    }
+
+    public void StartTurnResolution()
+    {
+        GameState = GameState.TurnResolution;
+
+        Time.IncreaseTime(1);
+        UI.UpdateTimeText();
+
+        EndTurnResolution();
+    }
+
+    private void EndTurnResolution()
+    {
+        StartTurn();
+    }
 
     public Furniture AddNewFurniture(FurnitureDef furnitureDef, Tile origin, Direction rotation, bool isMirrored)
     {
@@ -99,18 +135,100 @@ public class Game : MonoBehaviour
     {
         Debug.Log($"Setting operating mode of {furniture.LabelCap} to {mode.Label}. Assigned crew: {assignedCharacters.ToListString()}.");
 
+        furniture.SetOperatingMode(mode);
         furniture.SetAssignedCharacters(assignedCharacters);
-        foreach(Character c in assignedCharacters)
-        {
 
-        }
+        UpdateTurnResolution();
     }
 
-    public Dictionary<ResourceDef, int> GetOutputResources()
+    #endregion
+
+    #region Turn Resolution
+
+    /// <summary>
+    /// Recalculates all expected changes (resources, mood, needs, vitals, climate, etc.) during turn resolution.
+    /// </summary>
+    private void UpdateTurnResolution()
     {
-        Dictionary<ResourceDef, int> outputResources = new Dictionary<ResourceDef, int>();
-        return outputResources;
+        TurnResolutionResourceChanges = GetResourceChanges();
+
+        // UI
+        UI.UpdateTurnResolution();
     }
+
+    /// <summary>
+    /// Returns all resource changes that would be applied when ending the turn.
+    /// </summary>
+    private Dictionary<ResourceDef, int> GetResourceChanges()
+    {
+        Dictionary<ResourceDef, int> resourceChanges = new Dictionary<ResourceDef, int>();
+
+        foreach (Furniture furniture in GetFurniture())
+        {
+            foreach (var res in furniture.GetResourceChanges())
+            {
+                if (resourceChanges.ContainsKey(res.Key)) resourceChanges[res.Key] += res.Value;
+                else resourceChanges.Add(res.Key, res.Value);
+            }
+        }
+
+        return resourceChanges;
+    }
+
+    /// <summary>
+    /// Returns the amount of how much a resource changes when ending the turn.
+    /// </summary>
+    public int GetResourceChange(ResourceDef resource)
+    {
+        return TurnResolutionResourceChanges.TryGetValue(resource, out int value) ? value : 0; 
+    }
+
+    /// <summary>
+    /// Returns the full weight of the train when ending the turn (in kg).
+    /// </summary>
+    public int GetTrainWeight()
+    {
+        int weight = 0;
+
+        // Wagons
+        foreach (Wagon wagon in Train.Wagons) weight += wagon.GetWeight();
+
+        // Crew
+        foreach (Character c in Crew.Characters) weight += c.Weight;
+
+        return weight;
+    }
+
+    /// <summary>
+    /// Get all furniture in the train when ending the turn.
+    /// </summary>
+    public List<Furniture> GetFurniture()
+    {
+        List<Furniture> list = new List<Furniture>();
+        foreach (Wagon wagon in Train.Wagons) list.AddRange(wagon.Furniture);
+        return list;
+    }
+
+    /// <summary>
+    /// Returns the distance the train travels in the next turn/hour when ending the turn now.
+    /// <br/>This amount also represents the kph the train travels during the turn.
+    /// </summary>
+    public int GetTravelDistance()
+    {
+        int propulsionPower = TurnResolutionResourceChanges.ContainsKey(ResourceDefOf.PropulsionPower) ? TurnResolutionResourceChanges[ResourceDefOf.PropulsionPower] : 0;
+        int weight = GetTrainWeight();
+
+        int distance = propulsionPower * (PP_KM_WEIGHT / weight);
+        return distance;
+    }
+
+    #endregion
+
+    #region Getters
+
+    
+
+    
 
     #endregion
 

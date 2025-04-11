@@ -13,11 +13,13 @@ public static class WagonManager
         HelperFunctions.SetLayer(frontWheelObject, WorldManager.Layer_Wagon);
         Wheels frontWheels = frontWheelObject.AddComponent<Wheels>();
         frontWheels.transform.localPosition = new Vector3(layoutDef.Length * 0.15f, 0f, 0f);
+        frontWheels.Init(frontWheelsDef);
 
         GameObject backWheelObject = GameObject.Instantiate(ResourceManager.LoadPrefab(backWheelsDef.PrefabResourcePath), wagon.transform);
         HelperFunctions.SetLayer(backWheelObject, WorldManager.Layer_Wagon);
         Wheels backWheels = backWheelObject.AddComponent<Wheels>();
         backWheels.transform.localPosition = new Vector3(-layoutDef.Length * 0.15f, 0f, 0f);
+        backWheels.Init(backWheelsDef);
 
         string floorPrefabPath = floorDef.PrefabResourcePath + "_" + layoutDef.DefName;
         GameObject floorObject = GameObject.Instantiate(ResourceManager.LoadPrefab(floorPrefabPath), wagon.transform);
@@ -26,6 +28,7 @@ public static class WagonManager
         HelperFunctions.SetLayer(floorObject, WorldManager.Layer_Wagon);
         Floor floor = floorObject.AddComponent<Floor>();
         floor.transform.localPosition = new Vector3(0f, -0.25f, 0f);
+        floor.Init(floorDef);
 
         Frame frame = null;
         if(frameDef != null)
@@ -33,6 +36,7 @@ public static class WagonManager
             GameObject frameObject = GameObject.Instantiate(ResourceManager.LoadPrefab(frameDef.PrefabResourcePath), wagon.transform);
             HelperFunctions.SetLayer(frameObject, WorldManager.Layer_Wagon);
             frame = floorObject.AddComponent<Frame>();
+            frame.Init(frameDef);
         }
 
         wagon.Initialize(layoutDef, frontWheels, backWheels, floor, frame);

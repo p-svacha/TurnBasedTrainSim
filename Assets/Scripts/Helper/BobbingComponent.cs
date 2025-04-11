@@ -20,7 +20,7 @@ public class BobbingComponent : MonoBehaviour
     private void Update()
     {
         // Calculate the new y position using a sine wave to create a smooth bobbing effect
-        float newY = initialPosition.y + Mathf.Sin(Time.time * frequency) * amplitude;
+        float newY = initialPosition.y + Mathf.Sin(UnityEngine.Time.time * frequency) * amplitude;
         transform.localPosition = new Vector3(initialPosition.x, newY, initialPosition.z);
     }
 }

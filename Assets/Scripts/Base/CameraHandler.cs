@@ -38,13 +38,13 @@ public class CameraHandler : MonoBehaviour
         if(Input.GetKey(KeyCode.A))
         {
             float offsetX = isHoldingShift ? SIDE_MOVE_SPEED_SHIFT : SIDE_MOVE_SPEED;
-            offsetX *= Time.deltaTime;
+            offsetX *= UnityEngine.Time.deltaTime;
             transform.position += new Vector3(-offsetX, 0f, 0f);
         }
         if (Input.GetKey(KeyCode.D))
         {
             float offsetX = isHoldingShift ? SIDE_MOVE_SPEED_SHIFT : SIDE_MOVE_SPEED;
-            offsetX *= Time.deltaTime;
+            offsetX *= UnityEngine.Time.deltaTime;
             transform.position += new Vector3(offsetX, 0f, 0f);
         }
 

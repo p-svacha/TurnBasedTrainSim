@@ -38,4 +38,10 @@ public class Character : MonoBehaviour
             SelectionIndicator = null;
         }
     }
+
+    #region Getters
+
+    public int Weight => Game.HUMAN_WEIGHT;
+
+    #endregion
 }

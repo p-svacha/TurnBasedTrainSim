@@ -7,5 +7,5 @@ using UnityEngine;
 /// </summary>
 public class Frame : WagonPart
 {
-
+    public new FrameDef Def => (FrameDef)base.Def;
 }

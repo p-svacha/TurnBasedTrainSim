@@ -8,4 +8,9 @@ public abstract class WagonPartDef : Def
     /// The path after Resources/ leading to the prefab that gets instantiated to represent this furniture.
     /// </summary>
     public abstract string PrefabResourcePath { get; }
+
+    /// <summary>
+    /// The weight in kg of this part.
+    /// </summary>
+    public abstract int Weight { get; }
 }

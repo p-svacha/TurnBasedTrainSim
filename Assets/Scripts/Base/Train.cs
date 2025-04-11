@@ -6,7 +6,6 @@ public class Train : MonoBehaviour
 {
     public Game Game;
     public List<Wagon> Wagons = new List<Wagon>();
-    public float Speed;
 
     public void Init(Game game)
     {

@@ -4,6 +4,6 @@ using UnityEngine;
 
 public enum GameState
 {
-    PlanningPhase,
-    ResolvingPhase
+    TurnPlanning,
+    TurnResolution
 }

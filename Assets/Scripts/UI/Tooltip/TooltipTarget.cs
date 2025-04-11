@@ -29,7 +29,7 @@ public class TooltipTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if(IsFocussed)
         {
-            if(CurrentDelay < Delay) CurrentDelay += Time.deltaTime;
+            if(CurrentDelay < Delay) CurrentDelay += UnityEngine.Time.deltaTime;
             else ShowTooltip();
         }
     }

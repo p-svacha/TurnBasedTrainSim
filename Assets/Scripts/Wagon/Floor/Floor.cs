@@ -7,5 +7,5 @@ using UnityEngine;
 /// </summary>
 public class Floor : WagonPart
 {
-
+    public new FloorDef Def => (FloorDef)base.Def;
 }

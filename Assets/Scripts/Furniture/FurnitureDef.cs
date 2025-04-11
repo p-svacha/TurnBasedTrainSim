@@ -32,6 +32,11 @@ public abstract class FurnitureDef : Def
     public virtual List<InteractionSpot> InteractionSpots { get; } = new List<InteractionSpot>();
 
     /// <summary>
+    /// The weight in kg of this furniture.
+    /// </summary>
+    public abstract int Weight { get; }
+
+    /// <summary>
     /// The list of all modes this furniture can operate in, including "idle" modes that don't do anything.
     /// <br/>The first mode in the list will be the initial mode when the furniture gets created.
     /// </summary>

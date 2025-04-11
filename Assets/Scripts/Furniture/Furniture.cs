@@ -36,6 +36,11 @@ public class Furniture : MonoBehaviour
         AssignedCharacters = new List<Character>();
     }
 
+    public void SetOperatingMode(OperatingMode mode)
+    {
+        CurrentOperatingMode = mode;
+    }
+
     public void SetAssignedCharacters(List<Character> characters)
     {
         // Set assigned characters
@@ -74,6 +79,22 @@ public class Furniture : MonoBehaviour
         }
 
         return options;
+    }
+
+    /// <summary>
+    /// Returns all resource changes that would be applied by this furniture in its current operating mode.
+    /// </summary>
+    public Dictionary<ResourceDef, int> GetResourceChanges()
+    {
+        Dictionary<ResourceDef, int> outputResources = new Dictionary<ResourceDef, int>();
+
+        foreach(var res in CurrentOperatingMode.OutputResources)
+        {
+            if (outputResources.ContainsKey(res.Key)) outputResources[res.Key] += res.Value;
+            else outputResources.Add(res.Key, res.Value);
+        }
+
+        return outputResources;
     }
 
     /// <summary>
@@ -117,6 +138,7 @@ public class Furniture : MonoBehaviour
         return interactionSpots;
     }
 
+    public int Weight => Def.Weight;
     public string LabelCap => Def.LabelCap;
 
     #endregion

@@ -7,5 +7,5 @@ using UnityEngine;
 /// </summary>
 public class Wheels : WagonPart
 {
-
+    public new WheelsDef Def => (WheelsDef)base.Def;
 }

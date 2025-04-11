@@ -8,6 +8,7 @@ public class HandCarEngineDef : FurnitureDef
     public override string Label => "handcar engine";
     public override string Description => "A simple, manually-powered platform that moves the train using crew effort. Requires 1-2 crew members to operate and generates up to 3 PP.";
     public override string PrefabResourcePath => "Prefabs/Furniture/Engines/HandcarEngine";
+    public override int Weight => 150;
 
     public override Vector2Int Dimensions => new Vector2Int(4, 4);
     public override List<InteractionSpot> InteractionSpots => new List<InteractionSpot>()

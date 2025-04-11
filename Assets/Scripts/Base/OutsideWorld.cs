@@ -9,9 +9,9 @@ public class OutsideWorld : MonoBehaviour
 
     private const int NUM_BOARDS_PER_SEGMENT = 200;
     private const float TRACK_Y = -2.5f;
-    private const float BOARD_GAP = 1f;
+    private const float BOARD_GAP = 1.2f;
     private const float BOARD_LENGTH = 5f;
-    private const float BOARD_WIDTH = 0.8f;
+    private const float BOARD_WIDTH = 0.9f;
     private const float BOARD_HEIGHT = 0.1f;
     private const float BEAM_HEIGHT = 0.4f;
     private const float BEAM_WIDTH = 0.1f;
@@ -105,7 +105,7 @@ public class OutsideWorld : MonoBehaviour
 
     public void MoveWorld(float trainSpeed)
     {
-        float offsetX = -trainSpeed * Time.deltaTime;
+        float offsetX = -trainSpeed * UnityEngine.Time.deltaTime;
         TrackSegment1.transform.position += new Vector3(offsetX, 0f, 0f);
         TrackSegment2.transform.position += new Vector3(offsetX, 0f, 0f);
         BackgroundSegment1.transform.position += new Vector3(offsetX, 0f, 0f);

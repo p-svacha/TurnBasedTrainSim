@@ -119,5 +119,27 @@ public class Wagon : MonoBehaviour
         return Tiles.Cast<Tile>().Where(t => t.Occupation == TileOccupation.Empty).ToList().RandomElement();
     }
 
+    /// <summary>
+    /// Weight of the wagon when ending the turn.
+    /// </summary>
+    public int GetWeight()
+    {
+        int weight = 0;
+
+        // Wagon parts
+        if (FrontWheels != null) weight += FrontWheels.Weight;
+        if (BackWheels != null) weight += BackWheels.Weight;
+        if (Floor != null) weight += Floor.Weight;
+        if (Frame != null) weight += Frame.Weight;
+
+        // Furniture
+        foreach(Furniture f in Furniture)
+        {
+            weight += f.Weight;
+        }
+
+        return weight;
+    }
+
     #endregion
 }
